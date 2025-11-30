@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Library - Profile</title>
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/auth.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <nav class="nav">
+        <a href="../index.html" class="logo">📚 Library</a>
+        <ul class="nav-links">
+          <li><a href="books.html">Catalog</a></li>
+          <li><a href="reservations.html">My reservations</a></li>
+          <li><a href="profile.html">Profile</a></li>
+          <li><a href="#" id="logout-btn">Log out</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container">
+      <h1 style="margin-bottom: 2rem;">My profile</h1>
+
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+      </div>
+
+      <div id="profile-content" style="display: none;">
+        <div id="error-message" class="message error"></div>
+        <div id="success-message" class="message success"></div>
+
+        <!-- User Information -->
+        <div class="profile-section">
+          <h2>Personal Information</h2>
+          <div class="profile-info">
+            <div class="info-row">
+              <div class="info-label">ID:</div>
+              <div class="info-value" id="user-id"></div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">Name:</div>
+              <div class="info-value" id="user-name"></div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">Sur name:</div>
+              <div class="info-value" id="user-surname"></div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">City:</div>
+              <div class="info-value" id="user-city"></div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">Address:</div>
+              <div class="info-value" id="user-address"></div>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="showEditForm()" style="margin-top: 1rem;">
+            Edit profile
+          </button>
+        </div>
+
+        <!-- Account Information -->
+        <div class="profile-section">
+          <h2>Account information</h2>
+          <div class="profile-info">
+            <div class="info-row">
+              <div class="info-label">Login:</div>
+              <div class="info-value" id="account-login"></div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">Email:</div>
+              <div class="info-value" id="account-email"></div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">Mobile number:</div>
+              <div class="info-value" id="account-mobile"></div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">Telephone number:</div>
+              <div class="info-value" id="account-telephone"></div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">Status:</div>
+              <div class="info-value">
+                <span id="account-verified" class="badge"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Form Modal -->
+      <div id="edit-modal" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2>Edit profile</h2>
+            <button class="modal-close" onclick="closeEditForm()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <form id="edit-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="edit-name" class="form-label">Name</label>
+                  <input type="text" id="edit-name" class="form-input" required>
+                </div>
+                <div class="form-group">
+                  <label for="edit-surname" class="form-label">Surname</label>
+                  <input type="text" id="edit-surname" class="form-input" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="edit-addressLine1" class="form-label">Address (line 1)</label>
+                <input type="text" id="edit-addressLine1" class="form-input" required>
+              </div>
+
+              <div class="form-group">
+                <label for="edit-addressLine2" class="form-label">Address (line 2)</label>
+                <input type="text" id="edit-addressLine2" class="form-input" required>
+              </div>
+
+              <div class="form-group">
+                <label for="edit-addressLine3" class="form-label">Address (line 3)</label>
+                <input type="text" id="edit-addressLine3" class="form-input">
+              </div>
+
+              <div class="form-group">
+                <label for="edit-city" class="form-label">City</label>
+                <input type="text" id="edit-city" class="form-input" required>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeEditForm()">Cancel</button>
+            <button class="btn btn-primary" id="save-btn" onclick="saveProfile()">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2025 Library. Yaroslav Kliutko</p>
+    </div>
+  </footer>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script>
+    // Check authentication
+    auth.requireAuth();
+
+    const user = auth.getUser();
+    let userData = null;
+    let accountData = null;
+
+    async function loadProfile() {
+      const loading = document.getElementById('loading');
+      const profileContent = document.getElementById('profile-content');
+
+      try {
+        // Load user data
+        const userResponse = await api.user.getById(user.user_id);
+        userData = userResponse.user;
+
+        // Load account data
+        const accountResponse = await api.account.getById(userData.account_id);
+        accountData = accountResponse.account;
+
+        displayProfile();
+        profileContent.style.display = 'block';
+      } catch (error) {
+        alert('Error while loading profile: ' + error.message);
+      } finally {
+        loading.style.display = 'none';
+      }
+    }
+
+    function displayProfile() {
+      // Display user info
+      document.getElementById('user-id').textContent = userData.id;
+      document.getElementById('user-name').textContent = userData.name;
+      document.getElementById('user-surname').textContent = userData.surname;
+      document.getElementById('user-city').textContent = userData.city;
+      
+      const address = [
+        userData.addressLine1,
+        userData.addressLine2,
+        userData.addressLine3
+      ].filter(Boolean).join(', ');
+      document.getElementById('user-address').textContent = address;
+
+      // Display account info
+      document.getElementById('account-login').textContent = accountData.login;
+      document.getElementById('account-email').textContent = accountData.email;
+      document.getElementById('account-mobile').textContent = accountData.mobile_number;
+      document.getElementById('account-telephone').textContent = accountData.telephone_number;
+
+      const verifiedBadge = document.getElementById('account-verified');
+      if (accountData.verified) {
+        verifiedBadge.textContent = 'Verified';
+        verifiedBadge.className = 'badge badge-success';
+      } else {
+        verifiedBadge.textContent = 'Not verified';
+        verifiedBadge.className = 'badge badge-warning';
+      }
+    }
+
+    window.showEditForm = function() {
+      document.getElementById('edit-name').value = userData.name;
+      document.getElementById('edit-surname').value = userData.surname;
+      document.getElementById('edit-addressLine1').value = userData.addressLine1;
+      document.getElementById('edit-addressLine2').value = userData.addressLine2;
+      document.getElementById('edit-addressLine3').value = userData.addressLine3 || '';
+      document.getElementById('edit-city').value = userData.city;
+
+      document.getElementById('edit-modal').classList.add('active');
+    };
+
+    window.closeEditForm = function() {
+      document.getElementById('edit-modal').classList.remove('active');
+    };
+
+    window.saveProfile = async function() {
+      hideError('error-message');
+      hideError('success-message');
+      setLoading('save-btn', true);
+
+      const formData = {
+        name: document.getElementById('edit-name').value,
+        surname: document.getElementById('edit-surname').value,
+        addressLine1: document.getElementById('edit-addressLine1').value,
+        addressLine2: document.getElementById('edit-addressLine2').value,
+        addressLine3: document.getElementById('edit-addressLine3').value || null,
+        city: document.getElementById('edit-city').value,
+      };
+
+      try {
+        await api.user.update(formData);
+        showSuccess('success-message', 'Profile successfully updated');
+        closeEditForm();
+        
+        setTimeout(() => {
+          loadProfile();
+        }, 1000);
+      } catch (error) {
+        showError('error-message', error.message || 'Error while updating profile');
+      } finally {
+        setLoading('save-btn', false);
+      }
+    };
+
+    // Close modal on outside click
+    document.getElementById('edit-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'edit-modal') {
+        closeEditForm();
+      }
+    });
+
+    // Logout
+    document.getElementById('logout-btn').addEventListener('click', async (e) => {
+      e.preventDefault();
+      try {
+        await api.user.logout();
+        auth.logout();
+      } catch (error) {
+        auth.logout();
+      }
+    });
+
+    loadProfile();
+  </script>
+</body>
+</html>

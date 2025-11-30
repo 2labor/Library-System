@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Catalog - Library</title>
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/pagination.css">
+  <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/layout.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <nav class="nav">
+        <a href="../index.html" class="logo">📚 Library</a>
+        <ul class="nav-links">
+          <li><a href="books.html">Catalog</a></li>
+          <li><a href="reservations.html">My Reservations</a></li>
+          <li><a href="profile.html">Profile</a></li>
+          <li><a href="#" id="logout-btn">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1>Book Catalog</h1>
+        <p>Browse our collection of books</p>
+      </div>
+
+      <!-- Filter Section -->
+      <div class="filter-section">
+        <form id="filter-form">
+          <div class="filter-row">
+            
+            <!-- Search Input -->
+            <div class="filter-group">
+              <label for="search-input" class="form-label">Search</label>
+              <input 
+                type="text" 
+                id="search-input" 
+                class="form-input" 
+                placeholder="Search by title, author, or ISBN...">
+            </div>
+
+            <!-- Category Dropdown -->
+            <div class="filter-group">
+              <label for="category-select" class="form-label">Category</label>
+              <select id="category-select" class="form-select">
+                <option value="">All Categories</option>
+                <!-- Categories loaded dynamically -->
+              </select>
+            </div>
+
+            <!-- Search Button -->
+            <div class="filter-group">
+              <button type="submit" class="btn btn-primary" style="width: 100%;">
+                Search
+              </button>
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+      <!-- Results Header -->
+      <div class="results-header">
+        <div class="results-count" id="results-count">
+          Loading books...
+        </div>
+        <button class="btn btn-secondary" id="clear-filters-btn" style="display: none;">
+          Clear Filters
+        </button>
+      </div>
+
+      <!-- Loading Spinner -->
+      <div id="loading" class="loading" style="display: none;">
+        <div class="spinner"></div>
+      </div>
+
+      <!-- Error Message -->
+      <div id="error-message" class="message error"></div>
+
+      <!-- Books Grid -->
+      <div id="books-grid" class="grid grid-3">
+        <!-- Books loaded dynamically -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="empty-state" style="display: none;">
+        <div class="empty-state-icon">📚</div>
+        <h3>No Books Found</h3>
+        <p>Try adjusting your search criteria</p>
+      </div>
+
+      <!-- Pagination -->
+      <div id="pagination" class="pagination" style="display: none;">
+        <!-- Pagination generated dynamically -->
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 Library Management System. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/pagination.js"></script>
+  <script src="../js/books-catalog.js"></script>
+</body>
+</html>

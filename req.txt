@@ -1,0 +1,87 @@
+book system(user):
+
+- Search for a book;
+- Reserve a book;
+- View all the books that they have reserved;
+- If book is not available user can't reserve it;
+
+Log in:
+
+- log in to the system by using: login, password;
+- if user not in the system, user have to create account before;
+- hash;
+
+Registration:
+
+- mobile number (10 number's);
+- password (6 number's);
+- confirm password;
+- unique username;
+
+Book search system:
+
+-	by book title and/or author 
+- by book category description in a dropdown menu
+
+Reservation system:
+- Only for books that are available for reservation;
+- System should capture date of reservation;
+- User should get all books currently reserved by a user;
+- User should be able to remove book from reservation list;
+
+Done:
+
+- user, account, book
+
+to do:
+- services, repository, db
+
+repository:
+- User, Account, Book, Category, BookReserved (CRUD);
+
+
+User services:
+- Log in;
+- Registration
+- Change password
+
+Book services:
+- 
+
+https://learning.oreilly.com/covers/urn:orm:book:9781491903063/400w/
+Martin Kleppmann — Designing Data-Intensive Applications\
+Martin Kleppmann
+
+https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEoM0mkzeIKW_FRdydTNXIoP9NQNWzlPqyAw&s
+Database Internals: A Deep Dive Into How Distributed Data Systems Work
+Alex Petrov
+
+
+https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQR9Np900PUrpy2ZOpR12VC0Pc4mMPkwvfiJg&s
+Building Microservices: Designing Fine-Grained Systems
+Sam Newman
+
+https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfOcmC-rCB8fyYx9kcBwGQJE-5kFWeLj6NVw&s
+Software Engineering at Google: Lessons Learned from Programming Over Time
+Titus Winters 
+
+https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSde5Cl4hyOD5C9lnAyYfwZc6en0BBSJVGn0A&s
+A Philosophy of Software Design
+John Ousterhout
+
+
+https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSWqEiklT2-DjsWKdkMRfcEsk8DIbO2KkYaQ&s
+Site Reliability Engineering: How Google Runs Production Systems
+Betsy Beyer 
+
+https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdIAjO7uotXkldIBbyp5qFiMw7lglX5EXo6g&s
+Clean Code
+Robert C. Martin
+
+https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXHaC1zmVeV3Hrxx7IR1357CBRdGFbOrSORg&s
+Operating Systems: Three Easy Pieces
+Remzi Arpaci-Dusseau
+
+https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbPJP59qA7fCq4U3y5vSR4jb4pQJa55OTOpA&s
+Core Java volume 1
+S. horstmann 

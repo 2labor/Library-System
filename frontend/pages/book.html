@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Library - Book</title>
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/auth.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <nav class="nav">
+        <a href="../index.html" class="logo">📚 Library</a>
+        <ul class="nav-links">
+          <li><a href="books.html">Catalog</a></li>
+          <li><a href="reservations.html">My reservations</a></li>
+          <li><a href="profile.html">Profile</a></li>
+          <li><a href="#" id="logout-btn">Log out</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container">
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+      </div>
+
+      <div id="book-details" style="display: none;">
+        <div style="margin-bottom: 2rem;">
+          <a href="books.html" style="color: var(--primary-color); text-decoration: none;">
+            ← Back to catalog
+          </a>
+        </div>
+
+        <div id="error-message" class="message error"></div>
+        <div id="success-message" class="message success"></div>
+
+        <div style="display: grid; grid-template-columns: 300px 1fr; gap: 3rem; margin-bottom: 2rem;">
+          <div>
+            <img id="book-image" 
+                 style="width: 100%; border-radius: 0.5rem; box-shadow: var(--shadow-lg);" 
+                 alt="Book cover">
+          </div>
+
+          <div class="profile-section">
+            <h1 id="book-title" style="margin-bottom: 1rem;"></h1>
+            
+            <div class="profile-info">
+              <div class="info-row">
+                <div class="info-label">Author:</div>
+                <div class="info-value" id="book-author"></div>
+              </div>
+
+              <div class="info-row">
+                <div class="info-label">ISBN:</div>
+                <div class="info-value" id="book-isbn"></div>
+              </div>
+
+              <div class="info-row">
+                <div class="info-label">Year of published:</div>
+                <div class="info-value" id="book-year"></div>
+              </div>
+
+              <div class="info-row">
+                <div class="info-label">Edition:</div>
+                <div class="info-value" id="book-edition"></div>
+              </div>
+
+              <div class="info-row">
+                <div class="info-label">Category:</div>
+                <div class="info-value" id="book-category"></div>
+              </div>
+
+              <div class="info-row">
+                <div class="info-label">Status:</div>
+                <div class="info-value">
+                  <span id="book-status" class="badge"></span>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 2rem;">
+              <button id="reserve-btn" class="btn btn-primary" style="display: none;">
+                Reserve the book
+              </button>
+              <div id="reservation-info" style="display: none;">
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                  Book reserved due: <strong id="reserved-until"></strong>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 Library. Yaroslav Kliutko.</p>
+    </div>
+  </footer>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script>
+    // Check authentication
+    auth.requireAuth();
+
+    const isbn = getQueryParam('isbn');
+    let currentBook = null;
+
+    if (!isbn) {
+      window.location.href = 'books.html';
+    }
+
+    async function loadBook() {
+      const loading = document.getElementById('loading');
+      const bookDetails = document.getElementById('book-details');
+
+      try {
+        const books = await api.book.find({ isbn: isbn });
+        
+        if (books.length === 0) {
+          throw new Error('Book not found');
+        }
+
+        currentBook = books[0];
+        displayBook(currentBook);
+
+        await checkReservation();
+
+        bookDetails.style.display = 'block';
+      } catch (error) {
+        alert('Error while loading book: ' + error.message);
+        window.location.href = 'books.html';
+      } finally {
+        loading.style.display = 'none';
+      }
+    }
+
+    function displayBook(book) {
+      document.getElementById('book-title').textContent = book.title;
+      document.getElementById('book-author').textContent = book.author;
+      document.getElementById('book-isbn').textContent = book.isbn;
+      document.getElementById('book-year').textContent = book.year;
+      document.getElementById('book-edition').textContent = book.edition;
+      document.getElementById('book-category').textContent = book.category?.name || 'No category';
+      document.getElementById('book-image').src = book.imageUrl || 'https://via.placeholder.com/300x400?text=No+Image';
+
+      const statusBadge = document.getElementById('book-status');
+      if (book.available) {
+        statusBadge.textContent = 'Available';
+        statusBadge.className = 'badge badge-success';
+      } else {
+        statusBadge.textContent = 'Reserved';
+        statusBadge.className = 'badge badge-danger';
+      }
+    }
+
+    async function checkReservation() {
+      const reserveBtn = document.getElementById('reserve-btn');
+      const reservationInfo = document.getElementById('reservation-info');
+
+      try {
+        const response = await api.reservation.getByBook(isbn);
+        
+        if (response.reservation) {
+          reservationInfo.style.display = 'block';
+          document.getElementById('reserved-until').textContent = 
+            formatDate(response.reservation.reservedUntil);
+        } else if (currentBook.available) {
+          reserveBtn.style.display = 'block';
+        }
+      } catch (error) {
+        // No reservation, show reserve button if available
+        if (currentBook.available) {
+          reserveBtn.style.display = 'block';
+        }
+      }
+    }
+
+    // Reserve book
+    document.getElementById('reserve-btn').addEventListener('click', async () => {
+      hideError('error-message');
+      hideError('success-message');
+
+      const user = auth.getUser();
+      if (!user || !user.user_id) {
+        showError('error-message', 'You have to be verified');
+        return;
+      }
+
+      try {
+        const response = await api.reservation.reserve(isbn, user.user_id);
+        showSuccess('success-message', 'Book reserved');
+        
+        setTimeout(() => {
+          window.location.href = 'reservations.html';
+        }, 1500);
+      } catch (error) {
+        showError('error-message', error.message || 'Error of reservation');
+      }
+    });
+
+    // Logout
+    document.getElementById('logout-btn').addEventListener('click', async (e) => {
+      e.preventDefault();
+      try {
+        await api.user.logout();
+        auth.logout();
+      } catch (error) {
+        auth.logout();
+      }
+    });
+
+    loadBook();
+  </script>
+</body>
+</html>

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - Library</title>
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1>Create Account</h1>
+        <p id="step-description">Join our library community</p>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill" style="width: 33.33%"></div>
+        </div>
+        <div class="progress-steps">
+          <div class="progress-step active" id="step-indicator-1">
+            <div class="step-circle">1</div>
+            <div class="step-label">Account</div>
+          </div>
+          <div class="progress-step" id="step-indicator-2">
+            <div class="step-circle">2</div>
+            <div class="step-label">Verify</div>
+          </div>
+          <div class="progress-step" id="step-indicator-3">
+            <div class="step-circle">3</div>
+            <div class="step-label">Profile</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="error-message" class="message error"></div>
+      <div id="success-message" class="message success"></div>
+
+      <!-- STEP 1: Create Account -->
+      <div id="step-1" class="step-content">
+        <form id="account-form">
+          <div class="form-group">
+            <label for="login" class="form-label">Username</label>
+            <input 
+              type="text" 
+              id="login" 
+              name="login" 
+              class="form-input" 
+              required 
+              minlength="3"
+              placeholder="Choose a username">
+            <span class="form-help">At least 3 characters</span>
+          </div>
+
+          <div class="form-group">
+            <label for="email" class="form-label">Email Address</label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email" 
+              class="form-input" 
+              required
+              placeholder="your@email.com">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="mobile_number" class="form-label">Mobile</label>
+              <input 
+                type="tel" 
+                id="mobile_number" 
+                name="mobile_number" 
+                class="form-input" 
+                required
+                pattern="[0-9]{10}"
+                placeholder="1234567890">
+            </div>
+
+            <div class="form-group">
+              <label for="telephone_number" class="form-label">Phone</label>
+              <input 
+                type="tel" 
+                id="telephone_number" 
+                name="telephone_number" 
+                class="form-input" 
+                required
+                pattern="[0-9]{10}"
+                placeholder="0987654321">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              class="form-input" 
+              required 
+              minlength="6"
+              placeholder="Minimum 6 characters">
+            <span class="form-help">6 characters</span>
+          </div>
+
+          <div class="form-group">
+            <label for="confirm_password" class="form-label">Confirm Password</label>
+            <input 
+              type="password" 
+              id="confirm_password" 
+              name="confirm_password" 
+              class="form-input" 
+              required
+              placeholder="Re-enter password">
+          </div>
+
+          <button type="submit" id="step1-btn" class="btn btn-primary btn-full">
+            Continue to Verification
+          </button>
+        </form>
+      </div>
+
+      <!-- STEP 2: Verify Email -->
+      <div id="step-2" class="step-content" style="display: none;">
+        <div style="text-align: center; margin-bottom: 2rem;">
+          <div style="width: 80px; height: 80px; margin: 0 auto 1rem; background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">
+            📧
+          </div>
+          <p style="color: var(--text-secondary);">We've sent a verification code to</p>
+          <p id="email-display" style="font-weight: 700; color: var(--primary-color); font-size: 1.1rem; margin-top: 0.5rem;"></p>
+        </div>
+
+        <form id="verify-form">
+          <div class="code-input-container">
+            <label class="form-label" style="text-align: center; display: block;">Enter Verification Code</label>
+            <div class="code-inputs">
+              <input type="text" maxlength="1" class="code-input" id="code-1" />
+              <input type="text" maxlength="1" class="code-input" id="code-2" />
+              <input type="text" maxlength="1" class="code-input" id="code-3" />
+              <input type="text" maxlength="1" class="code-input" id="code-4" />
+              <input type="text" maxlength="1" class="code-input" id="code-5" />
+              <input type="text" maxlength="1" class="code-input" id="code-6" />
+            </div>
+          </div>
+
+          <button type="submit" id="step2-btn" class="btn btn-primary btn-full">
+            Verify Email
+          </button>
+        </form>
+
+        <div class="resend-container">
+          <a href="#" id="resend-link" class="resend-link">Resend Code</a>
+        </div>
+      </div>
+
+      <!-- STEP 3: Create Profile -->
+      <div id="step-3" class="step-content" style="display: none;">
+        <form id="profile-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name" class="form-label">First Name</label>
+              <input 
+                type="text" 
+                id="name" 
+                name="name" 
+                class="form-input" 
+                required
+                placeholder="John">
+            </div>
+
+            <div class="form-group">
+              <label for="surname" class="form-label">Last Name</label>
+              <input 
+                type="text" 
+                id="surname" 
+                name="surname" 
+                class="form-input" 
+                required
+                placeholder="Doe">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="addressLine1" class="form-label">Address Line 1</label>
+            <input 
+              type="text" 
+              id="addressLine1" 
+              name="addressLine1" 
+              class="form-input" 
+              required
+              placeholder="Street address">
+          </div>
+
+          <div class="form-group">
+            <label for="addressLine2" class="form-label">Address Line 2</label>
+            <input 
+              type="text" 
+              id="addressLine2" 
+              name="addressLine2" 
+              class="form-input" 
+              required
+              placeholder="Apt, suite, building">
+          </div>
+
+          <div class="form-group">
+            <label for="addressLine3" class="form-label">Address Line 3 (Optional)</label>
+            <input 
+              type="text" 
+              id="addressLine3" 
+              name="addressLine3" 
+              class="form-input"
+              placeholder="Additional info">
+          </div>
+
+          <div class="form-group">
+            <label for="city" class="form-label">City</label>
+            <input 
+              type="text" 
+              id="city" 
+              name="city" 
+              class="form-input" 
+              required
+              placeholder="City name">
+          </div>
+
+          <button type="submit" id="step3-btn" class="btn btn-primary btn-full">
+            Complete Registration
+          </button>
+        </form>
+      </div>
+
+      <div class="auth-footer">
+        Already have an account? <a href="login.html">Sign In</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script>
+    let currentStep = 1;
+    let registrationData = {};
+
+    // Update progress
+    function updateProgress(step) {
+      currentStep = step;
+      const progressFill = document.getElementById('progress-fill');
+      const stepDesc = document.getElementById('step-description');
+      
+      // Update progress bar
+      progressFill.style.width = `${(step / 3) * 100}%`;
+      
+      // Update step indicators
+      for (let i = 1; i <= 3; i++) {
+        const indicator = document.getElementById(`step-indicator-${i}`);
+        indicator.classList.remove('active', 'completed');
+        
+        if (i < step) {
+          indicator.classList.add('completed');
+          indicator.querySelector('.step-circle').textContent = '✓';
+        } else if (i === step) {
+          indicator.classList.add('active');
+          indicator.querySelector('.step-circle').textContent = i;
+        } else {
+          indicator.querySelector('.step-circle').textContent = i;
+        }
+      }
+      
+      // Update description
+      const descriptions = {
+        1: 'Join our library community',
+        2: 'Verify your email address',
+        3: 'Complete your profile'
+      };
+      stepDesc.textContent = descriptions[step];
+      
+      // Show/hide steps
+      for (let i = 1; i <= 3; i++) {
+        document.getElementById(`step-${i}`).style.display = i === step ? 'block' : 'none';
+      }
+    }
+
+    // STEP 1: Create Account
+    document.getElementById('account-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError('error-message');
+      setLoading('step1-btn', true);
+
+      const formData = {
+        login: document.getElementById('login').value,
+        email: document.getElementById('email').value,
+        mobile_number: parseInt(document.getElementById('mobile_number').value),
+        telephone_number: parseInt(document.getElementById('telephone_number').value),
+        password: document.getElementById('password').value,
+        confirm_password: document.getElementById('confirm_password').value,
+      };
+
+      if (formData.password !== formData.confirm_password) {
+        showError('error-message', 'Passwords do not match');
+        setLoading('step1-btn', false);
+        return;
+      }
+
+      try {
+        await api.account.register(formData);
+        registrationData = { ...formData };
+        document.getElementById('email-display').textContent = formData.email;
+        updateProgress(2);
+        document.getElementById('code-1').focus();
+      } catch (error) {
+        showError('error-message', error.message || 'Registration failed');
+      } finally {
+        setLoading('step1-btn', false);
+      }
+    });
+
+    // STEP 2: Code Input Logic
+    const codeInputs = document.querySelectorAll('.code-input');
+    
+    codeInputs.forEach((input, index) => {
+      input.addEventListener('input', (e) => {
+        if (e.target.value.length === 1 && index < codeInputs.length - 1) {
+          codeInputs[index + 1].focus();
+        }
+      });
+      
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !e.target.value && index > 0) {
+          codeInputs[index - 1].focus();
+        }
+      });
+      
+      input.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const pastedData = e.clipboardData.getData('text').slice(0, 6);
+        pastedData.split('').forEach((char, i) => {
+          if (codeInputs[i]) codeInputs[i].value = char;
+        });
+        if (pastedData.length === 6) {
+          codeInputs[5].focus();
+        }
+      });
+    });
+
+    // STEP 2: Verify Email
+    document.getElementById('verify-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError('error-message');
+      setLoading('step2-btn', true);
+
+      const code = Array.from(codeInputs).map(input => input.value).join('');
+
+      if (code.length !== 6) {
+        showError('error-message', 'Please enter all 6 digits');
+        setLoading('step2-btn', false);
+        return;
+      }
+
+      try {
+        const response = await api.account.verifyEmail(registrationData.email, code);
+        
+        if (response.verified) {
+          showSuccess('success-message', 'Email verified successfully!');
+          setTimeout(() => {
+            hideError('success-message');
+            updateProgress(3);
+          }, 1000);
+        }
+      } catch (error) {
+        showError('error-message', error.message || 'Invalid verification code');
+      } finally {
+        setLoading('step2-btn', false);
+      }
+    });
+
+    // Resend code
+    document.getElementById('resend-link').addEventListener('click', (e) => {
+      e.preventDefault();
+      showSuccess('success-message', 'Verification code resent!');
+      setTimeout(() => hideError('success-message'), 3000);
+    });
+
+    // STEP 3: Create Profile
+    document.getElementById('profile-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError('error-message');
+      setLoading('step3-btn', true);
+
+      const profileData = {
+        email: registrationData.email,
+        name: document.getElementById('name').value,
+        surname: document.getElementById('surname').value,
+        addressLine1: document.getElementById('addressLine1').value,
+        addressLine2: document.getElementById('addressLine2').value,
+        addressLine3: document.getElementById('addressLine3').value || null,
+        city: document.getElementById('city').value,
+      };
+
+      try {
+        const response = await api.user.create(profileData);
+        
+        // Auto login: save user data
+        auth.setUser({
+          user_id: response.user_id,
+          login: registrationData.login,
+          email: registrationData.email,
+        });
+
+        // Show success message
+        showSuccess('success-message', 'Registration complete! Redirecting...');
+        
+        // Redirect to books page
+        setTimeout(() => {
+          window.location.href = 'books.html';
+        }, 1500);
+      } catch (error) {
+        showError('error-message', error.message || 'Profile creation failed');
+      } finally {
+        setLoading('step3-btn', false);
+      }
+    });
+  </script>
+</body>
+</html>

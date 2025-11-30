@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Library - My reservations</title>
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/auth.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <nav class="nav">
+        <a href="../index.html" class="logo">📚 Library</a>
+        <ul class="nav-links">
+          <li><a href="books.html">Catalog</a></li>
+          <li><a href="reservations.html">My reservations</a></li>
+          <li><a href="profile.html">Profile</a></li>
+          <li><a href="#" id="logout-btn">Log out</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container">
+      <h1 style="margin-bottom: 2rem;">My reservations</h1>
+
+      <div id="loading" class="loading" style="display: none;">
+        <div class="spinner"></div>
+      </div>
+
+      <div id="error-message" class="message error"></div>
+      <div id="success-message" class="message success"></div>
+
+      <div id="reservations-list" style="display: grid; gap: 1.5rem;">
+        <!-- Reservations will be loaded here -->
+      </div>
+
+      <div id="empty-state" class="empty-state" style="display: none;">
+        <div class="empty-state-icon">📖</div>
+        <h3>You don't have any reservations yet</h3>
+        <p>Go to catalog and reserve a book</p>
+        <a href="books.html" class="btn btn-primary" style="margin-top: 1rem;">
+          Back to catalog
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2025 Library. Yaroslav Kliutko</p>
+    </div>
+  </footer>
+
+  <!-- Confirmation Modal -->
+  <div id="confirm-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Confirmation</h2>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-message"></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" id="confirm-action-btn">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script>
+    // Check authentication
+    auth.requireAuth();
+
+    const user = auth.getUser();
+    let reservations = [];
+
+    async function loadReservations() {
+      const loading = document.getElementById('loading');
+      const reservationsList = document.getElementById('reservations-list');
+      const emptyState = document.getElementById('empty-state');
+
+      loading.style.display = 'flex';
+      reservationsList.innerHTML = '';
+      emptyState.style.display = 'none';
+      hideError('error-message');
+
+      try {
+        const response = await api.reservation.getByUser(user.user_id);
+        reservations = response.reservations || [];
+
+        if (reservations.length === 0) {
+          emptyState.style.display = 'block';
+        } else {
+          await displayReservations();
+        }
+      } catch (error) {
+        showError('error-message', 'Error loading reservations');
+      } finally {
+        loading.style.display = 'none';
+      }
+    }
+
+    async function displayReservations() {
+      const reservationsList = document.getElementById('reservations-list');
+      
+      for (const reservation of reservations) {
+        try {
+          const books = await api.book.find({ isbn: reservation.isbn });
+          const book = books[0];
+          
+          const card = document.createElement('div');
+          card.className = 'reservation-card';
+          card.innerHTML = `
+            <div class="reservation-info">
+              <h3>${book?.title || 'Book not found'}</h3>
+              <p><strong>Author:</strong> ${book?.author || 'N/A'}</p>
+              <p><strong>ISBN:</strong> ${reservation.isbn}</p>
+              <p><strong>Reserved due:</strong> ${formatDate(reservation.reservedUntil)}</p>
+            </div>
+            <div class="reservation-actions">
+              <button class="btn btn-primary" onclick="extendReservation('${reservation.isbn}')">
+                Extend
+              </button>
+              <button class="btn btn-danger" onclick="confirmCancel(${reservation.id})">
+                Cancel
+              </button>
+            </div>
+          `;
+          
+          reservationsList.appendChild(card);
+        } catch (error) {
+          console.error('Error loading book:', error);
+        }
+      }
+    }
+
+    // Extend reservation
+    window.extendReservation = async function(isbn) {
+      hideError('error-message');
+      hideError('success-message');
+
+      try {
+        const response = await api.reservation.extend(isbn);
+        showSuccess('success-message', 'The booking has been successfully extended until' + formatDate(response.newReservedUntil));
+        
+        setTimeout(() => {
+          loadReservations();
+        }, 1500);
+      } catch (error) {
+        showError('error-message', error.message || 'Reservation extension error');
+      }
+    };
+
+    // Confirm cancel modal
+    let cancelReservationId = null;
+
+    window.confirmCancel = function(id) {
+      cancelReservationId = id;
+      document.getElementById('confirm-message').textContent = 
+        'Are you sure you want to cancel this reservation?';
+      document.getElementById('confirm-modal').classList.add('active');
+    };
+
+    window.closeModal = function() {
+      document.getElementById('confirm-modal').classList.remove('active');
+      cancelReservationId = null;
+    };
+
+    // Cancel reservation
+    document.getElementById('confirm-action-btn').addEventListener('click', async () => {
+      if (!cancelReservationId) return;
+
+      hideError('error-message');
+      hideError('success-message');
+
+      try {
+        await api.reservation.cancel(cancelReservationId);
+        showSuccess('success-message', 'Reservation cancelled');
+        closeModal();
+        
+        setTimeout(() => {
+          loadReservations();
+        }, 1000);
+      } catch (error) {
+        showError('error-message', error.message || 'Booking cancellation error');
+        closeModal();
+      }
+    });
+
+    // Close modal on outside click
+    document.getElementById('confirm-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'confirm-modal') {
+        closeModal();
+      }
+    });
+
+    // Logout
+    document.getElementById('logout-btn').addEventListener('click', async (e) => {
+      e.preventDefault();
+      try {
+        await api.user.logout();
+        auth.logout();
+      } catch (error) {
+        auth.logout();
+      }
+    });
+
+    loadReservations();
+  </script>
+</body>
+</html>
