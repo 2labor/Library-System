@@ -1,5 +1,13 @@
 <?php
-
+/*
+ * Inputs:
+ * - Methods to perform CRUD operations on Category entities
+ *
+ * Outputs:
+ * - Category entities retrieved or modified in the database
+ *
+ * File: app/repository/impl/CategoriesRepositoryImpl.php
+ */
 namespace App\Repository\Impl;
 
 use App\Repository\CategoriesRepository;
@@ -16,6 +24,11 @@ class CategoriesRepositoryImpl implements CategoriesRepository {
     $this->pdo = $pdo;
   }
 
+  /**
+   * Retrieves all categories from the database.
+   *
+   * @return array An array of categories with their IDs and names.
+   */
   public function findAll(): array {
     $sql = "SELECT id, name FROM categories";
     $stmt = $this->pdo->prepare($sql);
@@ -28,6 +41,12 @@ class CategoriesRepositoryImpl implements CategoriesRepository {
     return $rows;
   }
 
+  /**
+   * Finds a Category by its ID.
+   *
+   * @param int $id The ID of the Category to find.
+   * @return Category|null The found Category entity or null if not found.
+   */
   public function findCategoryById(int $id): ?Category {
     $sql = "SELECT * FROM categories WHERE id = :id";
     $stmt = $this->pdo->prepare($sql);

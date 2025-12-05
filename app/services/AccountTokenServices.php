@@ -1,4 +1,13 @@
 <?php
+/*
+ * Inputs:
+ * - Methods for account token management operations
+ *
+ * Outputs:
+ * - AccountToken entity or boolean status for operations
+ *
+ * File: app/services/AccountTokenServices.php
+ */
 namespace App\Services;
 
 use App\Domain\Entity\AccountToken;

@@ -1,4 +1,20 @@
 <?php
+/**
+ * Purpose: Interface defining book reservation HTTP endpoints.
+ *
+ * Responsibilities:
+ * - Declare method signatures for reservation flows (reserve, cancel, extend, list)
+ * - Define contracts for user-specific reservation queries
+ *
+ * Inputs:
+ * - Path parameters (reservationId, bookId, userId) defined in signatures
+ *
+ * Outputs:
+ * - Methods return void; implementations emit JSON with reservation DTOs
+ *
+ * File: app/controller/BookReservationController.php
+ */
+
 namespace App\Controller;
 
 interface BookReservationController {

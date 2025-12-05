@@ -1,4 +1,19 @@
 <?php
+/**
+ * Purpose: Data Transfer Object for Account entity.
+ *
+ * Responsibilities:
+ * - Encapsulate account data for transfer between layers
+ * - Provide getters for account properties
+ *
+ * Inputs:
+ * - Constructor parameters for account attributes
+ *
+ * Outputs:
+ * - Getter methods return individual account attributes
+ *
+ * File: app/domain/dto/AccountDto.php
+ */
 namespace App\Domain\Dto;
 
 class AccountDto {

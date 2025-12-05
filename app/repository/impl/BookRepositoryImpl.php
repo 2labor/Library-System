@@ -1,4 +1,13 @@
 <?php
+/*
+ * Inputs:
+ * - Methods to perform CRUD operations on Book entities
+ *
+ * Outputs:
+ * - Book entities retrieved or modified in the database
+ *
+ * File: app/repository/impl/BookRepositoryImpl.php
+ */
 namespace App\Repository\Impl;
 
 use PDO; 
@@ -17,6 +26,12 @@ class BookRepositoryImpl implements BookRepository {
     $this->mapper = $mapper;
   }
 
+  /**
+   * Creates a new Book in the database.
+   *
+   * @param Book $book The Book entity to create.
+   * @return Book The created Book entity.
+   */
   public function create(Book $book): Book {
     $sql = "INSERT INTO books (isbn, title, imageUrl, author, edition, year, available, category_id, created_at, updated_at)
         VALUES (:isbn, :title, :imageUrl, :author, :edition, :year, :available, :category_id, :created_at, :updated_at)";
@@ -37,6 +52,12 @@ class BookRepositoryImpl implements BookRepository {
     return $book;
   }
 
+  /**
+   * Updates an existing Book in the database.
+   *
+   * @param Book $book The Book entity to update.
+   * @return Book The updated Book entity.
+   */
   public function update(Book $book): Book {
     $sql = "UPDATE books 
         SET 
@@ -63,6 +84,12 @@ class BookRepositoryImpl implements BookRepository {
     return $book;
   }
 
+  /**
+   * Deletes a Book from the database by its ISBN.
+   *
+   * @param string $isbn The ISBN of the Book to delete.
+   * @return bool True if the deletion was successful, false otherwise.
+   */
   public function delete(string $isbn): bool {
     $sql = "DELETE FROM books WHERE isbn = :isbn";
     $stmt = $this->pdo->prepare($sql);
@@ -71,6 +98,12 @@ class BookRepositoryImpl implements BookRepository {
     return $stmt->rowCount() > 0;
   }
 
+  /**
+   * Finds a Book by its ISBN.
+   *
+   * @param string $isbn The ISBN of the Book to find.
+   * @return Book|null The found Book entity or null if not found.
+   */
   public function findBookByIsbn (string $isbn): ?Book {
     $sql = "SELECT * FROM books WHERE isbn = :isbn";
     $stmt = $this->pdo->prepare($sql);
@@ -83,6 +116,12 @@ class BookRepositoryImpl implements BookRepository {
     return $this->mapper->fromRow($row);
   }
 
+  /**
+   * Finds Books by partial criteria such as title, author, or category.
+   *
+   * @param array $criteria An associative array with optional keys: 'title', 'author', 'category_id'.
+   * @return Book[] An array of Book entities matching the criteria.
+   */
   public function findByPartial(array $criteria): array {
     $sql = "SELECT b.*, c.name AS category_name
             FROM books b
@@ -121,7 +160,11 @@ class BookRepositoryImpl implements BookRepository {
     return $books;
   }
 
-
+  /**
+   * Retrieves all available Books from the database.
+   *
+   * @return Book[] An array of available Book entities.
+   */
   public function findAllAvailable(): array {
     $sql = "SELECT b.*, c.name AS category_name
             FROM books b
@@ -138,7 +181,12 @@ class BookRepositoryImpl implements BookRepository {
     return $books;
   }
 
-
+  /**
+   * Toggles the availability status of a Book by its ISBN.
+   *
+   * @param string $isbn The ISBN of the Book to toggle availability.
+   * @return bool True if the update was successful, false otherwise.
+   */
   public function toggleAvailability(string $isbn): bool {
     $sql = "UPDATE books
     SET available = NOT available,

@@ -1,4 +1,13 @@
 <?php
+/*
+ * Inputs:
+ * - Methods for user management operations
+ *
+ * Outputs:
+ * - User entity or boolean status for operations
+ *
+ * File: app/services/UserServices.php
+ */
 namespace App\Services;
 
 use App\Domain\Entity\User;

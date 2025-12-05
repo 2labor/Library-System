@@ -1,4 +1,13 @@
 <?php
+/*
+ * Inputs:
+ * - Methods to perform CRUD operations on User entities
+ *
+ * Outputs:
+ * - User entities retrieved or modified in the database
+ *
+ * File: app/repository/UserRepository.php
+ */
 namespace App\Repository;
 
 use App\Domain\Entity\User;

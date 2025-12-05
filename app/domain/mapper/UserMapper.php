@@ -1,4 +1,14 @@
 <?php
+/*
+ * Inputs:
+ * - Methods to map between User entity and UserDto
+ * - Methods to map between User entity and associative array (database row)
+ *
+ * Outputs:
+ * - Mapped UserDto or associative array
+ *
+ * File: app/domain/mapper/UserMapper.php
+ */
 namespace App\Domain\Mapper;
 
 use App\Domain\Entity\User;

@@ -1,4 +1,14 @@
 <?php
+/*
+ * Inputs:
+ * - Methods to map between Account entity and AccountDto
+ * - Methods to map between Account entity and associative array (database row)
+ *
+ * Outputs:
+ * - Mapped AccountDto or associative array
+ *
+ * File: app/domain/mapper/AccountMapper.php
+ */
 namespace App\Domain\Mapper;
 
 use App\Domain\Entity\Account;

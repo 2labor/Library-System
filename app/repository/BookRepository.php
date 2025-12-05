@@ -1,4 +1,13 @@
 <?php
+/*
+ * Inputs:
+ * - Methods to perform CRUD operations on Book entities
+ *
+ * Outputs:
+ * - Book entities retrieved or modified in the database
+ *
+ * File: app/repository/BookRepository.php
+ */
 namespace App\Repository;
 
 use App\Domain\Entity\Book;

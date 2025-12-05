@@ -1,4 +1,13 @@
 <?php 
+/*
+ * Inputs:
+ * - Constructor parameters for category attributes
+ *
+ * Outputs:
+ * - Getter methods return individual category attributes
+ *
+ * File: app/domain/dto/CategoryDto.php
+ */
 namespace App\Domain\Dto;
 
 class CategoryDto implements \JsonSerializable {

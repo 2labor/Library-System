@@ -1,4 +1,13 @@
 <?php
+/*
+ * Inputs:
+ * - Methods to perform CRUD operations on AccountToken entities
+ *
+ * Outputs:
+ * - AccountToken entities retrieved or modified in the database
+ *
+ * File: app/repository/AccountTokenRepository.php
+ */
 namespace App\Repository;
 
 use App\Domain\Entity\AccountToken;

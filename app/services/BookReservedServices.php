@@ -1,4 +1,13 @@
 <?php
+/*
+ * Inputs:
+ * - Methods for book reservation operations
+ *
+ * Outputs:
+ * - BookReserved entity or boolean status for operations
+ *
+ * File: app/services/BookReservedServices.php
+ */
 namespace App\Services;
 
 use App\Domain\Entity\BookReserved;

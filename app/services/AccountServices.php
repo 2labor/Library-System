@@ -1,4 +1,13 @@
 <?php
+/*
+ * Inputs:
+ * - Methods for account management operations
+ *
+ * Outputs:
+ * - Account entity or boolean status for operations
+ *
+ * File: app/services/AccountServices.php
+ */
 namespace App\Services;
 
 use App\Domain\Entity\Account;

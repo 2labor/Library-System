@@ -1,4 +1,13 @@
 <?php
+/*
+ * Inputs:
+ * - Methods to perform CRUD operations on Account entities
+ *
+ * Outputs:
+ * - Account entities retrieved or modified in the database
+ *
+ * File: app/repository/AccountRepository.php
+ */
 namespace App\Repository;
 
 use App\Domain\Entity\Account;

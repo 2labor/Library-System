@@ -1,4 +1,13 @@
 <?php
+/*
+ * Inputs:
+ * - Methods for sending various types of emails
+ *
+ * Outputs:
+ * - Boolean status indicating success or failure of email sending
+ *
+ * File: app/services/EmailServices.php
+ */
 namespace App\Services;
 
 use App\Email\EmailTemplateRenderer;

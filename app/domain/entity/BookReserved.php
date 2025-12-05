@@ -1,4 +1,13 @@
 <?php
+/*
+ * Inputs:
+ * - Constructor parameters for book reservation attributes
+ *
+ * Outputs:
+ * - Getter and setter methods for individual book reservation attributes
+ *
+ * File: app/domain/entity/BookReserved.php
+ */
 namespace App\Domain\Entity;
 
 use DateTime;

@@ -1,4 +1,15 @@
 <?php
+/* Domain Entity: Account
+ *
+ * Inputs:
+ * - Constructor parameters for account attributes
+ *
+ * Outputs:
+ * - Getter methods return individual account attributes
+ *
+ * File: app/domain/entity/Account.php
+**/
+
 namespace App\Domain\Entity;
 
 use DateTime;

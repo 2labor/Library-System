@@ -1,4 +1,13 @@
 <?php 
+/*
+ * Inputs:
+ * - Methods to perform CRUD operations on BookReserved entities
+ *
+ * Outputs:
+ * - BookReserved entities retrieved or modified in the database
+ *
+ * File: app/repository/BookReservedRepository.php
+ */
 namespace App\Repository;
 
 use App\Domain\Entity\BookReserved;

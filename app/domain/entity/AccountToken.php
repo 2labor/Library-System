@@ -1,4 +1,13 @@
 <?php
+/*
+ * Inputs:
+ * - Constructor parameters for account token attributes
+ *
+ * Outputs:
+ * - Getter and setter methods for individual account token attributes
+ *
+ * File: app/domain/entity/AccountToken.php
+ */
 namespace App\Domain\Entity;
 
 use DateTime;

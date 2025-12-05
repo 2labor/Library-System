@@ -1,4 +1,13 @@
 <?php
+/*
+ * Inputs:
+ * - Methods for book reservation operations
+ *
+ * Outputs:
+ * - BookReserved entity or boolean status for operations
+ *
+ * File: app/services/impl/BookReservationServicesImpl.php
+ */
 namespace App\Services\Impl;
 
 use App\Repository\BookReservedRepository;
@@ -30,6 +39,14 @@ class BookReservationServicesImpl implements BookReservedServices {
     $this->emailService = $emailService;
   }
 
+  /**
+   * Reserves a book for a user.
+   *
+   * @param string $isbn The ISBN of the book to reserve.
+   * @param int $userId The ID of the user making the reservation.
+   * @return BookReserved The created BookReserved entity.
+   * @throws Exception If the user is not verified, book not found, book already reserved, or max reservations reached.
+   */
  public function reserveBook(string $isbn, int $userId): BookReserved {
     $user = $this->userRepo->findUserById($userId)
         ?? throw new Exception("User not found!");
@@ -65,6 +82,13 @@ class BookReservationServicesImpl implements BookReservedServices {
     return $this->repo->create($reservation);
   }
 
+  /**
+   * Extends an existing book reservation.
+   *
+   * @param BookReserved $reservation The BookReserved entity to extend.
+   * @return BookReserved The updated BookReserved entity.
+   * @throws Exception If the reservation has already been extended once.
+   */
   public function extendReservation(BookReserved $reservation): BookReserved {
     if($reservation->getCreatedAt() != $reservation->getUpdatedAt()) {
       throw new Exception("Reservation already extended once.");
@@ -87,7 +111,13 @@ class BookReservationServicesImpl implements BookReservedServices {
     return $this->repo->update($reservation);
   }
 
-
+  /**
+   * Cancels an existing book reservation.
+   *
+   * @param int $reservationId The ID of the reservation to cancel.
+   * @return bool True if the reservation was successfully canceled.
+   * @throws Exception If the reservation or user is not found, or if cancellation fails.
+   */
   public function cancelReservation(int $reservationId): bool {
     $reservation = $this->repo->findReservationById($reservationId);
     if (!$reservation) {
@@ -115,10 +145,22 @@ class BookReservationServicesImpl implements BookReservedServices {
     return $canceling;
   }
 
+  /**
+   * Retrieves a book reservation by book ISBN.
+   *
+   * @param string $isbn The ISBN of the book.
+   * @return BookReserved|null The BookReserved entity if found, null otherwise.
+   */
   public function getReservationByBook(string $isbn): ?BookReserved {
     return $this->repo->findReservationByBookIsbn($isbn);
   }
 
+  /**
+   * Retrieves all book reservations for a specific user.
+   *
+   * @param int $userId The ID of the user.
+   * @return array An array of BookReserved entities.
+   */
   public function getReservationByUserId(int $userId): array {
     return $this->repo->findReservationsByUserId($userId);
   }

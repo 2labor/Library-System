@@ -1,4 +1,14 @@
 <?php 
+/*
+ * Inputs:
+ * - Methods to map between Book entity and BookDto
+ * - Methods to map between Book entity and associative array (database row)
+ *
+ * Outputs:
+ * - Mapped BookDto or associative array
+ *
+ * File: app/domain/mapper/BookMapper.php
+ */
 namespace App\Domain\Mapper;
 
 use App\Domain\Entity\Book;

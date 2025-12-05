@@ -1,4 +1,13 @@
 <?php
+/*
+ * Inputs:
+ * - Methods to perform CRUD operations on Account entities
+ *
+ * Outputs:
+ * - Account entities retrieved or modified in the database
+ *
+ * File: app/repository/impl/AccountRepositoryImpl.php
+ */
 namespace App\Repository\Impl;
 
 use PDO; 
@@ -16,7 +25,12 @@ class AccountRepositoryImpl implements AccountRepository {
     $this->pdo=$pdo;
     $this->mapper=$mapper;
   }
-
+  /**
+   * Creates a new Account in the database.
+   *
+   * @param Account $account The Account entity to create.
+   * @return Account The created Account entity with updated ID and timestamps.
+   */
   public function create(Account $account): Account {
     $sql = "INSERT INTO accounts (login, password_hash, email, telephone_number, mobile_number, is_verified, created_at, updated_at)
     VALUES(:login, :password_hash, :email, :telephone_number, :mobile_number, :is_verified, :created_at, :updated_at)";
@@ -38,7 +52,12 @@ class AccountRepositoryImpl implements AccountRepository {
 
     return $account;
   }
-
+  /**
+   * Updates an existing Account in the database.
+   *
+   * @param Account $account The Account entity to update.
+   * @return Account The updated Account entity with refreshed timestamps.
+   */
   public function update(Account $account): Account {
     $sql = "UPDATE accounts
       SET
@@ -64,7 +83,12 @@ class AccountRepositoryImpl implements AccountRepository {
 
     return $account;
   }
-  
+  /**
+   * Deletes an Account from the database by its ID.
+   *
+   * @param int $id The ID of the Account to delete.
+   * @return bool True if the deletion was successful, false otherwise.
+   */
   public function delete(int $id): bool {
     $sql = "DELETE FROM accounts WHERE id = :id";
     $stmt = $this->pdo->prepare($sql);
@@ -73,6 +97,12 @@ class AccountRepositoryImpl implements AccountRepository {
     return $stmt->rowCount() > 0;
   }
 
+  /**
+   * Finds an Account by its ID.
+   *
+   * @param int $id The ID of the Account to find.
+   * @return Account|null The found Account entity or null if not found.
+   */
   public function findAccountById(int $id): ?Account {
     $sql = "SELECT * FROM accounts WHERE id = :id";
     $stmt = $this->pdo->prepare($sql);
@@ -86,6 +116,12 @@ class AccountRepositoryImpl implements AccountRepository {
     return $account;
   }
 
+  /**
+   * Finds an Account by its login.
+   *
+   * @param string $login The login of the Account to find.
+   * @return Account|null The found Account entity or null if not found.
+   */
   public function findAccountByLogin(string $login): ?Account {
     $sql = "SELECT * FROM accounts WHERE login = :login";
     $stmt = $this->pdo->prepare($sql);
@@ -97,6 +133,12 @@ class AccountRepositoryImpl implements AccountRepository {
     return $this->mapper->fromRow($row);
   }
 
+  /**
+   * Finds an Account by its email.
+   *
+   * @param string $email The email of the Account to find.
+   * @return Account|null The found Account entity or null if not found.
+   */
   public function findAccountByEmail(string $email): ?Account {
     $sql = "SELECT * FROM accounts WHERE email = :email";
 

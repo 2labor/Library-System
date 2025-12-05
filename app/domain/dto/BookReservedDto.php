@@ -1,4 +1,13 @@
 <?php
+/*
+ * Inputs:
+ * - Constructor parameters for book reservation attributes
+ *
+ * Outputs:
+ * - Getter methods return individual book reservation attributes
+ *
+ * File: app/domain/dto/BookReservedDto.php
+ */
 namespace App\Domain\Dto;
 
 class BookReservedDto {

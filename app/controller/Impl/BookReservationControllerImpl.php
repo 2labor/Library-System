@@ -1,4 +1,32 @@
 <?php
+/**
+ * Purpose: HTTP endpoints for book reservation flows (reserve, cancel, extend, list).
+ *
+ * Responsibilities:
+ * - Parse JSON body and path parameters
+ * - Validate reservation requests and user context
+ * - Delegate business logic to BookReservationServices
+ * - Use BookReservedMapper to convert entities to DTOs
+ * - Return JSON responses with appropriate status codes
+ * - Handle exceptions and return standardized error responses
+ *
+ * Inputs:
+ * - JSON body (bookId, userId, reservationId, extension days, etc.)
+ * - Path parameters (reservationId, userId)
+ * - HTTP headers (Authorization, authentication context)
+ *
+ * Outputs:
+ * - JSON: reservation DTOs, status messages, error objects
+ * - HTTP status: 200 (success), 201 (created), 400 (invalid), 404 (not found), 500 (error)
+ *
+ * Errors:
+ * - Throws Exception on invalid input or service failure
+ * - Converts all exceptions to standardized errorResponse (JSON with error, status)
+ * - Maps domain validation errors to HTTP 400
+ *
+ * File: app/controller/Impl/BookReservationControllerImpl.php
+ */
+
 namespace App\Controller\Impl;
 
 use App\Controller\BookReservationController;
@@ -12,6 +40,12 @@ class BookReservationControllerImpl implements BookReservationController {
     $this->service = $service;
   }
 
+  /**
+   * Reserve a book for the authenticated user.
+   * 
+   * Expects JSON: { "bookId": int, "userId": int, "start_date": "YYYY-MM-DD", "end_date": "YYYY-MM-DD" }
+   * Creates a BookReserved record and returns the created DTO with status 201.
+   */
   public function reserve(): void {
     try {
       $data = $this->getJsonBody();
@@ -40,6 +74,13 @@ class BookReservationControllerImpl implements BookReservationController {
     }
   }
 
+  /**
+   * Extend reservation end date.
+   * 
+   * Path parameter: reservationId (int)
+   * Expects JSON: { "new_end_date": "YYYY-MM-DD" }
+   * Returns updated reservation DTO.
+   */
   public function extend(): void {
     try {
       $isbn = $_GET['isbn'] ?? null;
@@ -60,7 +101,12 @@ class BookReservationControllerImpl implements BookReservationController {
       }
   }
 
-
+  /**
+   * Cancel an existing reservation.
+   * 
+   * Path parameter: reservationId (int)
+   * Returns success status message or error.
+   */
   public function cancel(): void {
     try {
       $id = $_GET['id'] ?? null;
@@ -77,6 +123,12 @@ class BookReservationControllerImpl implements BookReservationController {
     }
   }
 
+  /**
+   * Get reservation details for a specific book by ISBN.
+   * 
+   * Path parameter: isbn (string)
+   * Returns reservation DTO or 204 if not found.
+   */
   public function getByBook(string $isbn): void {
     try {
       $reservation = $this->service->getReservationByBook($isbn);
@@ -100,6 +152,12 @@ class BookReservationControllerImpl implements BookReservationController {
     }
   }
 
+  /**
+   * List all reservations for a specific user.
+   * 
+   * Path parameter: userId (int)
+   * Returns array of reservation DTOs.
+   */
   public function getByUser(int $userId): void {
     try {
       $reservations = $this->service->getReservationByUserId($userId);
@@ -119,6 +177,12 @@ class BookReservationControllerImpl implements BookReservationController {
     }
   }
 
+  /**
+   * Helper to parse JSON body from request.
+   *
+   * @throws Exception on invalid JSON.
+   * @return array Parsed JSON data.
+   */
   private function getJsonBody(): array {
     $json = file_get_contents("php://input");
     $data = json_decode($json, true);
@@ -130,6 +194,13 @@ class BookReservationControllerImpl implements BookReservationController {
     return $data;
   }
 
+  /**
+   * Send JSON response and exit.
+   *
+   * @param mixed $data Data to encode as JSON.
+   * @param int $status HTTP status code (default 200).
+   * @return void Outputs JSON and exits.
+   */
   private function jsonResponse($data, int $status = 200): void {
     if (ob_get_level() > 0) ob_clean();
 
@@ -139,6 +210,13 @@ class BookReservationControllerImpl implements BookReservationController {
     exit;
   }
 
+  /**
+   * Send standardized error JSON response.
+   *
+   * @param string $msg Error message.
+   * @param int $status HTTP status code (default 400).
+   * @return void Outputs error JSON and exits.
+   */
   private function errorResponse(string $msg, int $status = 400): void {
     $this->jsonResponse([
       "error" => $msg,

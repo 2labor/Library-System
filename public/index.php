@@ -1,6 +1,29 @@
 <?php
 declare(strict_types=1);
 
+/**
+ * Purpose: Front controller; entry point for all HTTP requests.
+ *
+ * Responsibilities:
+ * - Load application configuration
+ * - Start PHP session
+ * - Set security headers (CORS, Content-Type)
+ * - Require router and dispatch request
+ *
+ * Inputs:
+ * - HTTP request (URI, method, headers, body)
+ * - $_SERVER superglobal
+ *
+ * Outputs:
+ * - HTTP response (status, headers, body via router)
+ *
+ * Errors:
+ * - Terminates with error if config or router not found
+ * - Returns 404/405 from router if route not matched
+ *
+ * File: public/index.php
+ */
+
 ob_start();
 
 // CORS

@@ -1,4 +1,13 @@
 <?php
+/*
+ * Inputs:
+ * - Constructor parameters for user attributes
+ *
+ * Outputs:
+ * - Getter and setter methods for individual user attributes
+ *
+ * File: app/domain/entity/User.php
+ */
 namespace App\Domain\Entity;
 
 use DateTime;

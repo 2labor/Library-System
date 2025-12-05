@@ -1,4 +1,13 @@
 <?php
+/*
+ * Inputs:
+ * - Methods for account registration, password reset, email verification, and account retrieval
+ *
+ * Outputs:
+ * - Account entities created, updated, or retrieved from the database
+ *
+ * File: app/services/impl/AccountServicesImpl.php
+ */
 namespace App\Services\Impl;
 
 use App\Services\AccountServices;
@@ -25,6 +34,18 @@ class AccountServicesImpl implements AccountServices {
     $this->emailService = $emailService;
   }
 
+  /**
+   * Registers a new account after validating input data.
+   *
+   * @param string $login The desired login for the account.
+   * @param string $email The email address for the account.
+   * @param string $rowPassword The raw password for the account.
+   * @param string $confirmPassword The confirmation of the raw password.
+   * @param int $mobileNumber The mobile number for the account.
+   * @param int $telephoneNumber The telephone number for the account.
+   * @return Account The newly created Account entity.
+   * @throws Exception If validation fails or account creation encounters an error.
+   */
   public function registerAccount(string $login, string $email, string $rowPassword,
       string $confirmPassword, int $mobileNumber, int $telephoneNumber): Account  {
     if ($this->repo->findAccountByLogin($login)) {
@@ -77,6 +98,13 @@ class AccountServicesImpl implements AccountServices {
     return $account;
   }  
 
+  /**
+   * Initiates the password reset process for an account.
+   *
+   * @param string $email The email address associated with the account.
+   * @return bool True if the reset process was initiated successfully.
+   * @throws Exception If the email is invalid or the account is not found.
+   */
   public function resetPassword(string $email): bool {
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) throw new Exception("Invalid email");
@@ -97,6 +125,13 @@ class AccountServicesImpl implements AccountServices {
     return true;
   }
 
+  /**
+   * Resets the password for an account using a valid token.
+   * @return bool True if the password was reset successfully.
+   * @throws Exception If the token is invalid, account not found, or password validation fails.
+   * @param string $token The password reset token.
+   * @param string $newPassword The new password to set for the account.
+   */
    public function resetPasswordWithToken(string $token, string $newPassword): bool {
     $accountToken = $this->tokenService->findToken($token, 'reset_password');
     if (!$accountToken) {
@@ -124,7 +159,14 @@ class AccountServicesImpl implements AccountServices {
     return true;
   }
 
-
+  /**
+   * Verifies the email of an account using a verification code.
+   *
+   * @param string $email The email address associated with the account.
+   * @param string $code The verification code sent to the email.
+   * @return bool True if the email was verified successfully.
+   * @throws Exception If the account is not found, token is invalid, or code does not match.
+   */
   public function verifyEmail(string $email, string $code): bool {
     $account = $this->getAccountByEmail($email);
     if (!$account) throw new Exception("Account not found!");
@@ -146,6 +188,12 @@ class AccountServicesImpl implements AccountServices {
     return true;
   }
 
+  /**
+   * Retrieves an account by its ID.
+   *
+   * @param int $id The ID of the account to retrieve.
+   * @return Account|null The found Account entity or null if not found.
+   */
   public function getAccountById(int $id): ?Account {
     return $this->repo->findAccountById($id);
   }
@@ -168,6 +216,12 @@ class AccountServicesImpl implements AccountServices {
     return $updateAccount;
   }
 
+  /**
+   * Deletes an account by its ID.
+   *
+   * @param int $id The ID of the account to delete.
+   * @throws Exception If the account deletion fails.
+   */
   public function deleteAccount(int $id): void{
     $deleteAccount = $this->repo->delete($id);
     if (!$deleteAccount) {

@@ -1,4 +1,13 @@
 <?php 
+/*
+ * Inputs:
+ * - Methods to perform CRUD operations on User entities
+ *
+ * Outputs:
+ * - User entities retrieved or modified in the database
+ *
+ * File: app/repository/impl/UserRepositoryImpl.php
+ */
 namespace App\Repository\Impl;
 
 use PDO; 
@@ -20,6 +29,12 @@ class UserRepositoryImpl implements UserRepository {
     $this->pdo = $pdo;
   }
 
+  /**
+   * Creates a new User in the database.
+   *
+   * @param User $user The User entity to create.
+   * @return User The created User entity.
+   */
   public function create(User $user): User {
     $sql = "INSERT INTO users(
       name, surname, address_line1, address_line2, address_line3, city, account_id, created_at, updated_at
@@ -43,6 +58,12 @@ class UserRepositoryImpl implements UserRepository {
     return $user;
   }
 
+  /**
+   * Updates an existing User in the database.
+   *
+   * @param User $user The User entity to update.
+   * @return User The updated User entity.
+   */
   public function update(User $user): User {
     $sql = "UPDATE users
       SET 
@@ -70,6 +91,12 @@ class UserRepositoryImpl implements UserRepository {
     return $user;
   }
 
+  /**
+   * Deletes a User from the database by its ID.
+   *
+   * @param int $id The ID of the User to delete.
+   * @return bool True if the deletion was successful, false otherwise.
+   */
   public function delete(int $id): bool {
     $sql = "DELETE FROM users WHERE id = :id";
     $stmt = $this->pdo->prepare($sql);
@@ -78,6 +105,12 @@ class UserRepositoryImpl implements UserRepository {
     return $stmt->rowCount() > 0;
   }
 
+  /**
+   * Finds a User by its ID.
+   *
+   * @param int $id The ID of the User to find.
+   * @return User|null The found User entity or null if not found.
+   */
   public function findUserById(int $id): ?User {
     $sql = "SELECT * FROM users WHERE id = :id";
     $stmt = $this->pdo->prepare($sql);
@@ -90,7 +123,12 @@ class UserRepositoryImpl implements UserRepository {
     return $this->mapper->fromRow($row); 
   }
 
-
+  /**
+   * Finds a User by its associated account ID.
+   *
+   * @param int $accountId The account ID of the User to find.
+   * @return User|null The found User entity or null if not found.
+   */
   public function findUserByAccountId(int $accountId): ?User {
     $sql = "SELECT * FROM users WHERE account_id = :account_id";
     $stmt = $this->pdo->prepare($sql);

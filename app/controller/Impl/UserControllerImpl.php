@@ -1,4 +1,22 @@
 <?php
+/**
+ * Purpose: Implementation of UserController interface handling user-related HTTP requests.
+ *
+ * Responsibilities:
+ * - Implement user creation, login, logout, retrieval, deletion, and update logic
+ * - Interact with UserServices and AccountServices for business operations
+ * - Handle JSON request parsing and response formatting
+ *
+ * Inputs:
+ * - JSON request bodies for createUser, login, updateUser
+ * - Path parameter (userId) for getUserById, deleteUser
+ *
+ * Outputs:
+ * - Methods return void; responses are emitted as JSON with appropriate status codes
+ *
+ * File: app/controller/Impl/UserControllerImpl.php
+ */
+
 namespace App\Controller\Impl;
 
 use App\Controller\UserController;
@@ -15,6 +33,14 @@ class UserControllerImpl implements UserController {
       $this->userService = $userService;
       $this->accountService = $accountService;
   }
+  /**
+   * Create a new user.
+   * 
+   * Expects JSON: { "name": string, "surname": string, "addressLine1": string,
+   *                 "addressLine2": string, "addressLine3": string (optional),
+   *                 "city": string, "email": string }
+   * Returns created user ID and success message.
+   */
 
   public function createUser(): void {
     try {
@@ -45,6 +71,12 @@ class UserControllerImpl implements UserController {
       $this->errorResponse($e->getMessage());
     }
   }
+  /**
+   * Update user details.
+   * 
+   * Expects JSON with any of: name, surname, addressLine1, addressLine2,
+   * addressLine3, city. Updates the logged-in user's details.
+   */
 
   public function updateUser(): void {
     try {
@@ -72,6 +104,12 @@ class UserControllerImpl implements UserController {
       $this->errorResponse($e->getMessage(), 403);
     }
   }
+  /**
+   * User login.
+   * 
+   * Expects JSON: { "login": string, "password": string }
+   * Returns user ID and success message on successful login.
+   */
 
   public function login(): void {
     try {
@@ -92,6 +130,11 @@ class UserControllerImpl implements UserController {
       $this->errorResponse($e->getMessage());
     }
   }
+  /**
+   * User logout.
+   * 
+   * Logs out the currently logged-in user based on session data.
+   */
 
   public function logout(): void {
     try {
@@ -121,7 +164,12 @@ class UserControllerImpl implements UserController {
       $this->errorResponse($e->getMessage());
     }
   }
-
+  /**
+   * Get user by ID.
+   * 
+   * Path parameter: userId (int)
+   * Returns user DTO or 404 if not found.
+   */
   public function getUserById(int $id): void {
     try {
       $user = $this->userService->getUserById($id);
@@ -144,7 +192,12 @@ class UserControllerImpl implements UserController {
         $this->errorResponse($e->getMessage());
       }
   }
-
+  /**
+   * Delete user by ID.
+   * 
+   * Path parameter: userId (int)
+   * Returns success message or error if deletion fails.
+   */
   public function deleteUser(int $id): void {
     try {
       if (!$this->userService->deleteUser($id)) throw new Exception("Delete failed");
@@ -163,6 +216,13 @@ class UserControllerImpl implements UserController {
     return $data;
   }
 
+  /**
+   * Send JSON response and exit.
+   *
+   * @param mixed $data Data to encode as JSON.
+   * @param int $status HTTP status code (default 200).
+   * @return void Outputs JSON and exits.
+   */
   private function jsonResponse($data, int $status = 200): void {
     if (ob_get_level() > 0) {
         ob_clean();
@@ -173,9 +233,15 @@ class UserControllerImpl implements UserController {
 
     echo json_encode($data, JSON_UNESCAPED_UNICODE);
     exit;
-}
+  }
 
-
+  /**
+   * Send standardized error JSON response.
+   *
+   * @param string $msg Error message.
+   * @param int $status HTTP status code (default 400).
+   * @return void Outputs error JSON and exits.
+   */
   private function errorResponse(string $msg, int $status = 400): void {
     $this->jsonResponse([
       "error" => $msg,

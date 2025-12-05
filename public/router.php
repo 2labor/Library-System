@@ -1,4 +1,9 @@
 <?php
+/*
+ * Router for handling incoming HTTP requests
+ *
+ * File: public/router.php
+ */
 $uri = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 
 if (php_sapi_name() === 'cli-server') {

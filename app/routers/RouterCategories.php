@@ -1,4 +1,13 @@
 <?php
+/*
+ * Inputs:
+ * - HTTP method and URI for category-related requests
+ *
+ * Outputs:
+ * - Delegates handling to CategoriesController methods based on the request
+ *
+ * File: app/routers/RouterCategories.php
+ */
 namespace App\Routers;
 
 use App\Controller\CategoriesController;
@@ -11,6 +20,27 @@ class RouterCategories {
     $this->controller = $controller;
   }
 
+  /**
+   * Handles HTTP requests for category-related routes.
+   *
+   * Routes:
+   * - GET/categories - Retrieve a list of all categories
+   * - GET/categories/{id} - Retrieve a specific category by its ID
+   *
+   * Behavior:
+   * - Matches URIs using regex patterns (`/categories` and `/categories/{id}`)
+   * - Extracts `{id}` when applicable
+   * - Delegates processing to controller methods:
+   * - getAll
+   * - getById
+   * - Returns appropriate HTTP status codes:
+   * - 405 Method Not Allowed for unsupported methods
+   * - 404 Not Found for unmatched routes
+   *
+   * @param string $method The HTTP request method.
+   * @param string $uri    The requested URI.
+   * @return void
+   */
   public function handle(string $method, string $uri): void {
     if (preg_match('#^/categories$#', $uri)) {
       switch ($method) {

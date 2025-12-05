@@ -1,4 +1,13 @@
 <?php
+/*
+ * Inputs:
+ * - Constructor parameters for user attributes
+ *
+ * Outputs:
+ * - Getter methods return individual user attributes
+ *
+ * File: app/domain/dto/UserDto.php
+ */
 namespace App\Domain\Dto;
 
 class UserDto {

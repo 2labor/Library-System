@@ -1,4 +1,16 @@
 <?php
+/**
+ * Data Transfer Object for Book entity
+ *
+ * Inputs:
+ * - Constructor parameters for book attributes
+ *
+ * Outputs:
+ * - Getter methods return individual book attributes
+ * - jsonSerialize method for JSON representation
+ *
+ * File: app/domain/dto/BookDto.php
+ */
 namespace App\Domain\Dto;
 
 use App\Domain\Dto\CategoryDto;

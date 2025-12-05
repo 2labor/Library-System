@@ -1,4 +1,13 @@
 <?php
+/*
+ * Inputs:
+ * - Constructor parameters for book attributes
+ *
+ * Outputs:
+ * - Getter and setter methods for individual book attributes
+ *
+ * File: app/domain/entity/Book.php
+ */
 namespace App\Domain\Entity;
 
 use DateTime;

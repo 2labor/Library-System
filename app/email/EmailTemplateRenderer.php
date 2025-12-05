@@ -1,4 +1,13 @@
 <?php
+/*
+ * Inputs:
+ * - Template name and data array
+ *
+ * Outputs:
+ * - Rendered email content as string
+ *
+ * File: app/email/EmailTemplateRenderer.php
+ */
 namespace App\Email;
 
 class EmailTemplateRenderer
@@ -10,6 +19,9 @@ class EmailTemplateRenderer
         $this->templatePath = rtrim($templatePath, '/') . '/';
     }
 
+    /**
+     * Renders an email template with the given data.
+     */
     public function render(string $templateName, array $data = []): string
     {
         $file = $this->templatePath . $templateName . '.php';

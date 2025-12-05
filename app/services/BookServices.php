@@ -1,4 +1,13 @@
 <?php
+/*
+ * Inputs:
+ * - Methods for book management operations
+ *
+ * Outputs:
+ * - Book entity or boolean status for operations
+ *
+ * File: app/services/BookServices.php
+ */
 namespace App\Services;
 
 use App\Domain\Entity\Book;
