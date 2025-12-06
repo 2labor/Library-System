@@ -32,8 +32,8 @@ return [
     'gmail' => [
       'host' => 'smtp.gmail.com',
       'port' => 587,
-      'username' => 'beehappyyyyyyy@gmail.com',
-      'password' => 'wpsoesplitljilyg',
+      'username' => '', //insert your email account
+      'password' => '', // insert your password for email(app-passwodr)
     ],
   ],
 ];
